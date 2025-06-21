@@ -22,8 +22,15 @@ export default function TabLayout() {
         tabBarStyle: Platform.select({
           ios: {
             position: 'absolute',
+            backgroundColor: 'transparent',
+            borderTopWidth: 0,
+            elevation: 0,
+            shadowOpacity: 0,
           },
-          default: {},
+          default: {
+            borderTopWidth: 1,
+            borderTopColor: '#ccc',
+          },
         }),
       }}>
       <Tabs.Screen
@@ -42,6 +49,15 @@ export default function TabLayout() {
           headerShown: true, // Enable header just for this screen
           headerTitle: 'Search News',
           tabBarIcon: ({ color, size }) => <Ionicons name="search" color={color} size={size} />,
+        }}
+      />
+      {/* Hide [id].tsx from the tab bar but keep it in the same navigator group */}
+      <Tabs.Screen 
+        name="[id]"
+        options={{
+          href: null, // This prevents it from showing in the tab bar
+          headerShown: true,
+          headerTitle: 'News Detail',
         }}
       />
     </Tabs>

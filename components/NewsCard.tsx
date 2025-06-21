@@ -100,8 +100,14 @@ const styles = StyleSheet.create({
     borderRadius: pxToNumber(designSystem.components.newsCard.borderRadius),
     padding: pxToNumber(designSystem.components.newsCard.padding),
     marginBottom: pxToNumber(designSystem.components.newsCard.marginBottom),
-    boxShadow: '0px 1px 3px rgba(0,0,0,0.1)',
+    // Remove boxShadow as it's not standard React Native and may cause artifacts
     elevation: 2,
+    // Ensure card has consistent styling across platforms
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.1,
+    shadowRadius: 2,
+    overflow: 'hidden', // Prevent content from spilling outside the card
   } as ViewStyle,
   content: {
     flex: 1,
