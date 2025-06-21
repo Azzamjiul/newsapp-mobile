@@ -1,14 +1,14 @@
 import { useRouter } from 'expo-router';
 import React, { useRef } from 'react';
 import {
-    Animated,
-    Image,
-    ImageStyle,
-    StyleSheet,
-    TextStyle,
-    TouchableOpacity,
-    View,
-    ViewStyle
+  Animated,
+  Image,
+  ImageStyle,
+  StyleSheet,
+  TextStyle,
+  TouchableOpacity,
+  View,
+  ViewStyle
 } from 'react-native';
 
 import { ThemedText } from '@/components/ThemedText';
@@ -27,7 +27,7 @@ export default function NewsCard({ news }: NewsCardProps) {
   const opacityValue = useRef(new Animated.Value(1)).current;
 
   const handlePress = () => {
-    router.push({ pathname: '/news/[id]', params: { id: news.id.toString() } });
+    router.push({ pathname: '/[id]', params: { id: news.id.toString() } });
   };
 
   const handlePressIn = () => {
@@ -100,13 +100,7 @@ const styles = StyleSheet.create({
     borderRadius: pxToNumber(designSystem.components.newsCard.borderRadius),
     padding: pxToNumber(designSystem.components.newsCard.padding),
     marginBottom: pxToNumber(designSystem.components.newsCard.marginBottom),
-    shadowColor: designSystem.colorPalette.neutral.black,
-    shadowOffset: {
-      width: 0,
-      height: 1,
-    },
-    shadowOpacity: 0.1,
-    shadowRadius: 3,
+    boxShadow: '0px 1px 3px rgba(0,0,0,0.1)',
     elevation: 2,
   } as ViewStyle,
   content: {

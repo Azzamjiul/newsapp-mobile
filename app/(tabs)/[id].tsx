@@ -226,7 +226,7 @@ const styles = StyleSheet.create({
     lineHeight: pxToNumber(designSystem.typography.fontSizes['2xl']) * 1.2,
     marginBottom: pxToNumber(designSystem.layout.structure.gaps.medium),
     fontFamily: designSystem.typography.fontFamily.primary,
-    textAlign: 'justify',
+    textAlign: 'left',
   },
   metadataContainer: {
     flexDirection: 'row',
