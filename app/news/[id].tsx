@@ -1,5 +1,5 @@
 import { Ionicons } from '@expo/vector-icons';
-import { useLocalSearchParams, useRouter } from 'expo-router';
+import { Stack, useLocalSearchParams, useRouter } from 'expo-router';
 import {
   ActivityIndicator,
   Image,
@@ -48,69 +48,78 @@ export default function NewsDetailScreen() {
 
   if (loading) {
     return (
-      <ThemedView style={styles.centered}>
-        <ActivityIndicator size="large" color={designSystem.colorPalette.primary.red} />
-      </ThemedView>
+      <>
+        <Stack.Screen options={{ title: 'Loading...' }} />
+        <ThemedView style={styles.centered}>
+          <ActivityIndicator size="large" color={designSystem.colorPalette.primary.red} />
+        </ThemedView>
+      </>
     );
   }
 
   if (error || !news) {
     return (
-      <ThemedView style={styles.centered}>
-        <ThemedText style={styles.errorText}>
-          {error || 'News not found'}
-        </ThemedText>
-        <TouchableOpacity style={styles.retryButton} onPress={() => router.back()}>
-          <ThemedText style={styles.retryButtonText}>Go Back</ThemedText>
-        </TouchableOpacity>
-      </ThemedView>
+      <>
+        <Stack.Screen options={{ title: 'News Article' }} />
+        <ThemedView style={styles.centered}>
+          <ThemedText style={styles.errorText}>
+            {error || 'News not found'}
+          </ThemedText>
+          <TouchableOpacity style={styles.retryButton} onPress={() => router.back()}>
+            <ThemedText style={styles.retryButtonText}>Go Back</ThemedText>
+          </TouchableOpacity>
+        </ThemedView>
+      </>
     );
   }
 
   const contentWidth = width > 640 ? 600 : width - 2 * pxToNumber(designSystem.articleDetailPage.layout.padding.split(' ')[1]);
 
   return (
-    <ThemedView style={styles.container}>
-      <ScrollView 
-        style={styles.scrollView}
-        contentContainerStyle={styles.scrollContent}
-        showsVerticalScrollIndicator={false}
-      >
-        {/* Article Header */}
-        <Text style={styles.title}>{news.title}</Text>
-        
-        <View style={styles.metadataContainer}>
-          <Text style={styles.author}>By Publisher</Text>
-          <Text style={styles.timestamp}>{formatArticleDate(news.createdAt)}</Text>
+    <>
+      <Stack.Screen options={{ title: news.title }} />
+      <ThemedView style={styles.container}>
+        <ScrollView 
+          style={styles.scrollView}
+          contentContainerStyle={styles.scrollContent}
+          showsVerticalScrollIndicator={false}
+        >
+          {/* Article Header */}
+          <Text style={styles.title}>{news.title}</Text>
+          
+          <View style={styles.metadataContainer}>
+            <Text style={styles.author}>By Publisher</Text>
+            <Text style={styles.timestamp}>{formatArticleDate(news.createdAt)}</Text>
+          </View>
+
+          {/* Hero Image */}
+          <Image 
+            source={{ uri: news.imageUrl }} 
+            style={styles.heroImage}
+            resizeMode="cover"
+          />
+
+          {/* Article Content */}
+          <RenderHtml
+            contentWidth={contentWidth}
+            source={{ html: news.content }}
+            baseStyle={styles.articleContent}
+          />
+        </ScrollView>
+
+        {/* Bottom Actions */}
+        <View style={styles.bottomActions}>
+          <TouchableOpacity style={styles.shareButton} onPress={handleShare}>
+            <Ionicons name="share-outline" size={20} color={designSystem.articleDetailPage.bottomActions.shareButton.color} />
+            <Text style={styles.shareButtonText}>Share</Text>
+          </TouchableOpacity>
+          
+          <TouchableOpacity style={styles.webButton} onPress={handleOpenPublisher}>
+            <Text style={styles.webButtonText}>Read at Publisher</Text>
+          </TouchableOpacity>
         </View>
-
-        {/* Hero Image */}
-        <Image 
-          source={{ uri: news.imageUrl }} 
-          style={styles.heroImage}
-          resizeMode="cover"
-        />
-
-        {/* Article Content */}
-        <RenderHtml
-          contentWidth={contentWidth}
-          source={{ html: news.content }}
-          baseStyle={styles.articleContent}
-        />
-      </ScrollView>
-
-      {/* Bottom Actions */}
-      <View style={styles.bottomActions}>
-        <TouchableOpacity style={styles.shareButton} onPress={handleShare}>
-          <Ionicons name="share-outline" size={20} color={designSystem.articleDetailPage.bottomActions.shareButton.color} />
-          <Text style={styles.shareButtonText}>Share</Text>
-        </TouchableOpacity>
-        
-        <TouchableOpacity style={styles.webButton} onPress={handleOpenPublisher}>
-          <Text style={styles.webButtonText}>Read at Publisher</Text>
-        </TouchableOpacity>
-      </View>
-    </ThemedView>
+      </ThemedView>
+    </>
   );
 }
 

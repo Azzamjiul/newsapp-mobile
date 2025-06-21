@@ -1,3 +1,4 @@
+import { Stack } from 'expo-router';
 import { ActivityIndicator, FlatList, StyleSheet, View, ViewStyle } from 'react-native';
 
 import NewsCard from '@/components/NewsCard';
@@ -50,19 +51,22 @@ export default function HomeScreen() {
   }
 
   return (
-    <ThemedView style={styles.container}>
-      <FlatList
-        data={news}
-        keyExtractor={item => item.id.toString()}
-        renderItem={({ item }) => <NewsCard news={item} />}
-        contentContainerStyle={styles.contentContainer}
-        style={styles.list}
-        onEndReached={loadMore}
-        onEndReachedThreshold={0.5}
-        ListFooterComponent={renderFooter}
-        showsVerticalScrollIndicator={false}
-      />
-    </ThemedView>
+    <>
+      <Stack.Screen options={{ title: 'Recent News' }} />
+      <ThemedView style={styles.container}>
+        <FlatList
+          data={news}
+          keyExtractor={item => item.id.toString()}
+          renderItem={({ item }) => <NewsCard news={item} />}
+          contentContainerStyle={styles.contentContainer}
+          style={styles.list}
+          onEndReached={loadMore}
+          onEndReachedThreshold={0.5}
+          ListFooterComponent={renderFooter}
+          showsVerticalScrollIndicator={false}
+        />
+      </ThemedView>
+    </>
   );
 }
 
