@@ -1,7 +1,8 @@
-import { Stack } from 'expo-router';
-import { ActivityIndicator, FlatList, StyleSheet, View, ViewStyle } from 'react-native';
+import { FlatList, StyleSheet, View, ViewStyle } from 'react-native';
 
+import LoadingSpinner from '@/components/LoadingSpinner';
 import NewsCard from '@/components/NewsCard';
+import PageTransition from '@/components/PageTransition';
 import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
 import { pxToNumber } from '@/constants/parseDesignToken';
@@ -15,7 +16,7 @@ export default function HomeScreen() {
     if (loadingMore) {
       return (
         <View style={styles.loadingFooter}>
-          <ActivityIndicator size="large" color={designSystem.colorPalette.primary.red} />
+          <LoadingSpinner size="medium" text="Loading more articles" />
         </View>
       );
     }
@@ -25,7 +26,7 @@ export default function HomeScreen() {
   if (loading) {
     return (
       <ThemedView style={styles.centered}>
-        <ActivityIndicator size="large" color={designSystem.colorPalette.primary.red} />
+        <LoadingSpinner size="large" text="Loading latest news" fullScreen />
       </ThemedView>
     );
   }
@@ -51,8 +52,7 @@ export default function HomeScreen() {
   }
 
   return (
-    <>
-      <Stack.Screen options={{ title: 'Recent News' }} />
+    <PageTransition>
       <ThemedView style={styles.container}>
         <FlatList
           data={news}
@@ -66,7 +66,7 @@ export default function HomeScreen() {
           showsVerticalScrollIndicator={false}
         />
       </ThemedView>
-    </>
+    </PageTransition>
   );
 }
 

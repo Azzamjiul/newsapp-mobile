@@ -1,7 +1,6 @@
 import { Ionicons } from '@expo/vector-icons';
 import { Stack, useLocalSearchParams, useRouter } from 'expo-router';
 import {
-  ActivityIndicator,
   Image,
   Linking,
   ScrollView,
@@ -14,6 +13,8 @@ import {
 } from 'react-native';
 import RenderHtml from 'react-native-render-html';
 
+import LoadingSpinner from '@/components/LoadingSpinner';
+import PageTransition from '@/components/PageTransition';
 import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
 import { getFontWeight, pxToNumber } from '@/constants/parseDesignToken';
@@ -51,7 +52,7 @@ export default function NewsDetailScreen() {
       <>
         <Stack.Screen options={{ title: 'Loading...' }} />
         <ThemedView style={styles.centered}>
-          <ActivityIndicator size="large" color={designSystem.colorPalette.primary.red} />
+          <LoadingSpinner size="large" text="Loading article" fullScreen />
         </ThemedView>
       </>
     );
@@ -73,17 +74,18 @@ export default function NewsDetailScreen() {
     );
   }
 
-  const contentWidth = width > 640 ? 600 : width - 2 * pxToNumber(designSystem.articleDetailPage.layout.padding.split(' ')[1]);
+  const contentWidth = width > 640 ? 600 : width - 2 * pxToNumber(designSystem.layout.structure.padding);
 
   return (
     <>
       <Stack.Screen options={{ title: news.title }} />
-      <ThemedView style={styles.container}>
-        <ScrollView 
-          style={styles.scrollView}
-          contentContainerStyle={styles.scrollContent}
-          showsVerticalScrollIndicator={false}
-        >
+      <PageTransition>
+        <ThemedView style={styles.container}>
+          <ScrollView 
+            style={styles.scrollView}
+            contentContainerStyle={styles.scrollContent}
+            showsVerticalScrollIndicator={false}
+          >
           {/* Article Header */}
           <Text style={styles.title}>{news.title}</Text>
           
@@ -104,13 +106,70 @@ export default function NewsDetailScreen() {
             contentWidth={contentWidth}
             source={{ html: news.content }}
             baseStyle={styles.articleContent}
+            tagsStyles={{
+              p: {
+                fontSize: pxToNumber(designSystem.typography.fontSizes.lg),
+                lineHeight: pxToNumber(designSystem.typography.fontSizes.lg) * designSystem.typography.lineHeights.relaxed,
+                color: designSystem.colorPalette.neutral.darkGray,
+                fontFamily: designSystem.typography.fontFamily.primary,
+                textAlign: 'justify',
+                marginBottom: pxToNumber(designSystem.layout.structure.gaps.medium),
+              },
+              h1: {
+                fontSize: pxToNumber(designSystem.typography.fontSizes['2xl']),
+                fontWeight: getFontWeight(designSystem.typography.fontWeights.bold),
+                color: designSystem.colorPalette.neutral.black,
+                marginVertical: pxToNumber(designSystem.layout.structure.gaps.medium),
+                fontFamily: designSystem.typography.fontFamily.primary,
+              },
+              h2: {
+                fontSize: pxToNumber(designSystem.typography.fontSizes.xl),
+                fontWeight: getFontWeight(designSystem.typography.fontWeights.semibold),
+                color: designSystem.colorPalette.neutral.black,
+                marginVertical: pxToNumber(designSystem.layout.structure.gaps.medium),
+                fontFamily: designSystem.typography.fontFamily.primary,
+              },
+              h3: {
+                fontSize: pxToNumber(designSystem.typography.fontSizes.lg),
+                fontWeight: getFontWeight(designSystem.typography.fontWeights.semibold),
+                color: designSystem.colorPalette.neutral.darkGray,
+                marginVertical: pxToNumber(designSystem.layout.structure.gaps.small),
+                fontFamily: designSystem.typography.fontFamily.primary,
+              },
+              a: {
+                color: designSystem.colorPalette.primary.blue,
+                textDecorationLine: 'underline',
+              },
+              blockquote: {
+                borderLeftWidth: 4,
+                borderLeftColor: designSystem.colorPalette.primary.blue,
+                paddingLeft: pxToNumber(designSystem.layout.structure.gaps.medium),
+                marginVertical: pxToNumber(designSystem.layout.structure.gaps.medium),
+                fontStyle: 'italic',
+                backgroundColor: designSystem.colorPalette.background.accent,
+                padding: pxToNumber(designSystem.layout.structure.gaps.medium),
+                borderRadius: 8,
+              },
+              li: {
+                marginBottom: pxToNumber(designSystem.layout.structure.gaps.small),
+                fontSize: pxToNumber(designSystem.typography.fontSizes.lg),
+                lineHeight: pxToNumber(designSystem.typography.fontSizes.lg) * designSystem.typography.lineHeights.relaxed,
+                color: designSystem.colorPalette.neutral.darkGray,
+              },
+              strong: {
+                fontWeight: getFontWeight(designSystem.typography.fontWeights.bold),
+              },
+              em: {
+                fontStyle: 'italic',
+              },
+            }}
           />
         </ScrollView>
 
         {/* Bottom Actions */}
         <View style={styles.bottomActions}>
           <TouchableOpacity style={styles.shareButton} onPress={handleShare}>
-            <Ionicons name="share-outline" size={20} color={designSystem.articleDetailPage.bottomActions.shareButton.color} />
+            <Ionicons name="share-outline" size={20} color={designSystem.colorPalette.primary.blue} />
             <Text style={styles.shareButtonText}>Share</Text>
           </TouchableOpacity>
           
@@ -118,7 +177,8 @@ export default function NewsDetailScreen() {
             <Text style={styles.webButtonText}>Read at Publisher</Text>
           </TouchableOpacity>
         </View>
-      </ThemedView>
+        </ThemedView>
+      </PageTransition>
     </>
   );
 }
@@ -126,14 +186,14 @@ export default function NewsDetailScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: designSystem.articleDetailPage.layout.backgroundColor,
+    backgroundColor: designSystem.colorPalette.background.primary,
   },
   scrollView: {
     flex: 1,
   },
   scrollContent: {
-    padding: pxToNumber(designSystem.articleDetailPage.layout.padding.split(' ')[1]),
-    paddingBottom: 100, // Space for bottom actions
+    padding: pxToNumber(designSystem.layout.structure.padding),
+    paddingBottom: 120, // Space for bottom actions
   },
   centered: {
     flex: 1,
@@ -146,6 +206,7 @@ const styles = StyleSheet.create({
     color: designSystem.colorPalette.primary.red,
     textAlign: 'center',
     marginBottom: pxToNumber(designSystem.layout.structure.gaps.large),
+    fontFamily: designSystem.typography.fontFamily.primary,
   },
   retryButton: {
     backgroundColor: designSystem.colorPalette.primary.blue,
@@ -159,75 +220,95 @@ const styles = StyleSheet.create({
     fontWeight: getFontWeight(designSystem.typography.fontWeights.medium),
   },
   title: {
-    fontSize: pxToNumber(designSystem.articleDetailPage.articleHeader.title.fontSize),
-    fontWeight: getFontWeight(designSystem.articleDetailPage.articleHeader.title.fontWeight),
-    color: designSystem.articleDetailPage.articleHeader.title.color,
-    lineHeight: pxToNumber(designSystem.articleDetailPage.articleHeader.title.fontSize) * 1.3,
-    marginBottom: pxToNumber(designSystem.articleDetailPage.articleHeader.title.marginBottom),
+    fontSize: pxToNumber(designSystem.typography.fontSizes['2xl']),
+    fontWeight: getFontWeight(designSystem.typography.fontWeights.bold),
+    color: designSystem.colorPalette.neutral.black,
+    lineHeight: pxToNumber(designSystem.typography.fontSizes['2xl']) * 1.2,
+    marginBottom: pxToNumber(designSystem.layout.structure.gaps.medium),
+    fontFamily: designSystem.typography.fontFamily.primary,
+    textAlign: 'justify',
   },
   metadataContainer: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    marginBottom: pxToNumber(designSystem.articleDetailPage.articleHeader.metadata.marginBottom),
+    alignItems: 'center',
+    marginBottom: pxToNumber(designSystem.layout.structure.gaps.large),
+    paddingVertical: pxToNumber(designSystem.layout.structure.gaps.small),
+    borderBottomWidth: 1,
+    borderBottomColor: designSystem.colorPalette.background.accent,
   },
   author: {
-    fontSize: pxToNumber(designSystem.articleDetailPage.articleHeader.metadata.author.fontSize),
-    fontWeight: getFontWeight(designSystem.articleDetailPage.articleHeader.metadata.author.fontWeight),
-    color: designSystem.articleDetailPage.articleHeader.metadata.author.color,
+    fontSize: pxToNumber(designSystem.typography.fontSizes.sm),
+    fontWeight: getFontWeight(designSystem.typography.fontWeights.semibold),
+    color: designSystem.colorPalette.primary.blue,
+    fontFamily: designSystem.typography.fontFamily.primary,
   },
   timestamp: {
-    fontSize: pxToNumber(designSystem.articleDetailPage.articleHeader.metadata.timestamp.fontSize),
-    color: designSystem.articleDetailPage.articleHeader.metadata.timestamp.color,
+    fontSize: pxToNumber(designSystem.typography.fontSizes.sm),
+    color: designSystem.colorPalette.neutral.mediumGray,
+    fontFamily: designSystem.typography.fontFamily.primary,
   },
   heroImage: {
     width: '100%',
     aspectRatio: 16/9,
-    borderRadius: pxToNumber(designSystem.articleDetailPage.heroImage.borderRadius),
-    marginBottom: pxToNumber(designSystem.articleDetailPage.heroImage.marginBottom),
+    borderRadius: 12,
+    marginBottom: pxToNumber(designSystem.layout.structure.gaps.large),
+    backgroundColor: designSystem.colorPalette.background.accent,
   },
   articleContent: {
-    fontSize: pxToNumber(designSystem.articleDetailPage.articleContent.typography.fontSize),
-    lineHeight: pxToNumber(designSystem.articleDetailPage.articleContent.typography.fontSize) * 1.6,
-    color: designSystem.articleDetailPage.articleContent.typography.color,
-    fontWeight: getFontWeight(designSystem.articleDetailPage.articleContent.typography.fontWeight),
+    fontSize: pxToNumber(designSystem.typography.fontSizes.lg),
+    lineHeight: pxToNumber(designSystem.typography.fontSizes.lg) * designSystem.typography.lineHeights.relaxed,
+    color: designSystem.colorPalette.neutral.darkGray,
+    fontWeight: getFontWeight(designSystem.typography.fontWeights.normal),
+    fontFamily: designSystem.typography.fontFamily.primary,
+    textAlign: 'justify',
+    marginBottom: pxToNumber(designSystem.layout.structure.gaps.large),
   },
   bottomActions: {
     position: 'absolute',
-    bottom: pxToNumber(designSystem.articleDetailPage.bottomActions.bottom),
-    left: pxToNumber(designSystem.articleDetailPage.bottomActions.left),
-    right: pxToNumber(designSystem.articleDetailPage.bottomActions.right),
+    bottom: 0,
+    left: 0,
+    right: 0,
     flexDirection: 'row',
-    gap: pxToNumber(designSystem.articleDetailPage.bottomActions.gap),
+    gap: pxToNumber(designSystem.layout.structure.gaps.medium),
+    padding: pxToNumber(designSystem.layout.structure.padding),
+    backgroundColor: designSystem.colorPalette.background.primary,
+    borderTopWidth: 1,
+    borderTopColor: designSystem.colorPalette.background.accent,
+    paddingBottom: 34, // Safe area for iOS
   },
   shareButton: {
-    backgroundColor: designSystem.articleDetailPage.bottomActions.shareButton.backgroundColor,
+    backgroundColor: designSystem.colorPalette.background.primary,
     borderWidth: 1,
-    borderColor: designSystem.articleDetailPage.bottomActions.shareButton.border.split(' ')[2], // Extract color from border string
-    borderRadius: pxToNumber(designSystem.articleDetailPage.bottomActions.shareButton.borderRadius),
-    padding: pxToNumber(designSystem.articleDetailPage.bottomActions.shareButton.padding.split(' ')[0]),
-    paddingHorizontal: pxToNumber(designSystem.articleDetailPage.bottomActions.shareButton.padding.split(' ')[1]),
+    borderColor: designSystem.colorPalette.primary.blue,
+    borderRadius: 12,
+    paddingVertical: pxToNumber(designSystem.layout.structure.gaps.medium),
+    paddingHorizontal: pxToNumber(designSystem.layout.structure.gaps.large),
     flexDirection: 'row',
     alignItems: 'center',
-    gap: pxToNumber(designSystem.articleDetailPage.bottomActions.shareButton.gap),
+    justifyContent: 'center',
+    gap: pxToNumber(designSystem.layout.structure.gaps.small),
   },
   shareButtonText: {
-    fontSize: pxToNumber(designSystem.articleDetailPage.bottomActions.shareButton.fontSize),
-    fontWeight: getFontWeight(designSystem.articleDetailPage.bottomActions.shareButton.fontWeight),
-    color: designSystem.articleDetailPage.bottomActions.shareButton.color,
+    fontSize: pxToNumber(designSystem.typography.fontSizes.base),
+    fontWeight: getFontWeight(designSystem.typography.fontWeights.semibold),
+    color: designSystem.colorPalette.primary.blue,
+    fontFamily: designSystem.typography.fontFamily.primary,
   },
   webButton: {
-    backgroundColor: designSystem.articleDetailPage.bottomActions.webButton.backgroundColor,
-    borderRadius: pxToNumber(designSystem.articleDetailPage.bottomActions.webButton.borderRadius),
-    padding: pxToNumber(designSystem.articleDetailPage.bottomActions.webButton.padding.split(' ')[0]),
-    paddingHorizontal: pxToNumber(designSystem.articleDetailPage.bottomActions.webButton.padding.split(' ')[1]),
+    backgroundColor: designSystem.colorPalette.primary.blue,
+    borderRadius: 12,
+    paddingVertical: pxToNumber(designSystem.layout.structure.gaps.medium),
+    paddingHorizontal: pxToNumber(designSystem.layout.structure.gaps.large),
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
   },
   webButtonText: {
-    fontSize: pxToNumber(designSystem.articleDetailPage.bottomActions.webButton.fontSize),
-    fontWeight: getFontWeight(designSystem.articleDetailPage.bottomActions.webButton.fontWeight),
-    color: designSystem.articleDetailPage.bottomActions.webButton.color,
+    fontSize: pxToNumber(designSystem.typography.fontSizes.base),
+    fontWeight: getFontWeight(designSystem.typography.fontWeights.semibold),
+    color: designSystem.colorPalette.neutral.white,
     textAlign: 'center',
+    fontFamily: designSystem.typography.fontFamily.primary,
   },
 });

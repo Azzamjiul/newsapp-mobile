@@ -1,7 +1,9 @@
 import { useRouter } from 'expo-router';
 import { useState } from 'react';
-import { ActivityIndicator, FlatList, Image, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import { FlatList, Image, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
 
+import LoadingSpinner from '@/components/LoadingSpinner';
+import PageTransition from '@/components/PageTransition';
 import { getFontWeight, pxToNumber } from '@/constants/parseDesignToken';
 import designSystem from '@/constants/ui-design-system';
 
@@ -33,8 +35,9 @@ export default function SearchScreen() {
   };
 
   return (
-    <View style={{ flex: 1, backgroundColor: designSystem.colorPalette.background.primary }}>
-      <TextInput
+    <PageTransition>
+      <View style={{ flex: 1, backgroundColor: designSystem.colorPalette.background.primary }}>
+        <TextInput
         style={{
           margin: pxToNumber(designSystem.layout.structure.gaps.medium),
           padding: pxToNumber(designSystem.components.newsCard.padding),
@@ -51,7 +54,7 @@ export default function SearchScreen() {
         returnKeyType="search"
       />
       {loading ? (
-        <ActivityIndicator style={{ marginTop: 20 }} size="large" color={designSystem.colorPalette.primary.red} />
+        <LoadingSpinner size="large" text="Searching news" />
       ) : (
         <FlatList
           data={results}
@@ -97,7 +100,8 @@ export default function SearchScreen() {
           }
         />
       )}
-    </View>
+      </View>
+    </PageTransition>
   );
 }
 

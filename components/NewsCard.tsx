@@ -1,6 +1,15 @@
 import { useRouter } from 'expo-router';
-import React from 'react';
-import { Image, ImageStyle, StyleSheet, TextStyle, TouchableOpacity, View, ViewStyle } from 'react-native';
+import React, { useRef } from 'react';
+import {
+    Animated,
+    Image,
+    ImageStyle,
+    StyleSheet,
+    TextStyle,
+    TouchableOpacity,
+    View,
+    ViewStyle
+} from 'react-native';
 
 import { ThemedText } from '@/components/ThemedText';
 import { getFontWeight, pxToNumber } from '@/constants/parseDesignToken';
@@ -14,25 +23,72 @@ interface NewsCardProps {
 
 export default function NewsCard({ news }: NewsCardProps) {
   const router = useRouter();
+  const scaleValue = useRef(new Animated.Value(1)).current;
+  const opacityValue = useRef(new Animated.Value(1)).current;
 
   const handlePress = () => {
     router.push({ pathname: '/news/[id]', params: { id: news.id.toString() } });
   };
 
+  const handlePressIn = () => {
+    Animated.parallel([
+      Animated.timing(scaleValue, {
+        toValue: 0.98,
+        duration: 100,
+        useNativeDriver: true,
+      }),
+      Animated.timing(opacityValue, {
+        toValue: 0.7,
+        duration: 100,
+        useNativeDriver: true,
+      }),
+    ]).start();
+  };
+
+  const handlePressOut = () => {
+    Animated.parallel([
+      Animated.timing(scaleValue, {
+        toValue: 1,
+        duration: 100,
+        useNativeDriver: true,
+      }),
+      Animated.timing(opacityValue, {
+        toValue: 1,
+        duration: 100,
+        useNativeDriver: true,
+      }),
+    ]).start();
+  };
+
   return (
-    <TouchableOpacity style={styles.card} onPress={handlePress}>
-      <View style={styles.content}>
-        <ThemedText 
-          style={styles.title} 
-          numberOfLines={designSystem.components.newsCard.structure.content.title.maxLines}
-        >
-          {news.title}
-        </ThemedText>
-        <ThemedText style={styles.metadata}>
-          Publisher • {formatNewsDate(news.createdAt)}
-        </ThemedText>
-      </View>
-      <Image source={{ uri: news.imageUrl }} style={styles.image} />
+    <TouchableOpacity 
+      onPress={handlePress}
+      onPressIn={handlePressIn}
+      onPressOut={handlePressOut}
+      activeOpacity={1}
+    >
+      <Animated.View 
+        style={[
+          styles.card,
+          {
+            transform: [{ scale: scaleValue }],
+            opacity: opacityValue,
+          }
+        ]}
+      >
+        <View style={styles.content}>
+          <ThemedText 
+            style={styles.title} 
+            numberOfLines={designSystem.components.newsCard.structure.content.title.maxLines}
+          >
+            {news.title}
+          </ThemedText>
+          <ThemedText style={styles.metadata}>
+            Publisher • {formatNewsDate(news.createdAt)}
+          </ThemedText>
+        </View>
+        <Image source={{ uri: news.imageUrl }} style={styles.image} />
+      </Animated.View>
     </TouchableOpacity>
   );
 }
@@ -44,6 +100,14 @@ const styles = StyleSheet.create({
     borderRadius: pxToNumber(designSystem.components.newsCard.borderRadius),
     padding: pxToNumber(designSystem.components.newsCard.padding),
     marginBottom: pxToNumber(designSystem.components.newsCard.marginBottom),
+    shadowColor: designSystem.colorPalette.neutral.black,
+    shadowOffset: {
+      width: 0,
+      height: 1,
+    },
+    shadowOpacity: 0.1,
+    shadowRadius: 3,
+    elevation: 2,
   } as ViewStyle,
   content: {
     flex: 1,
@@ -56,16 +120,19 @@ const styles = StyleSheet.create({
     lineHeight: pxToNumber(designSystem.components.newsCard.structure.content.title.fontSize) * designSystem.typography.lineHeights.tight,
     color: designSystem.components.newsCard.structure.content.title.color,
     marginBottom: pxToNumber(designSystem.components.newsCard.structure.content.title.marginBottom),
+    fontFamily: designSystem.typography.fontFamily.primary,
   } as TextStyle,
   metadata: {
     color: designSystem.components.newsCard.structure.content.metadata.color,
     fontSize: pxToNumber(designSystem.components.newsCard.structure.content.metadata.fontSize),
     fontWeight: getFontWeight(designSystem.components.newsCard.structure.content.metadata.fontWeight),
+    fontFamily: designSystem.typography.fontFamily.primary,
   } as TextStyle,
   image: {
     width: pxToNumber(designSystem.components.newsCard.structure.media.width),
     height: pxToNumber(designSystem.components.newsCard.structure.media.height),
     borderRadius: pxToNumber(designSystem.components.newsCard.structure.media.borderRadius),
     resizeMode: 'cover',
+    backgroundColor: designSystem.colorPalette.background.accent,
   } as ImageStyle,
 });
