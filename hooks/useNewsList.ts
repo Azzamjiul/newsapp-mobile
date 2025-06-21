@@ -38,7 +38,7 @@ export const useNewsList = (): UseNewsListReturn => {
       const data = await fetchNews();
       setNews(data);
       if (data.length > 0) {
-        setCursor(data[data.length - 1].id);
+        setCursor(data[data.length - 1].createdAtUnix);
         setHasMore(true);
       } else {
         setHasMore(false);
@@ -58,7 +58,7 @@ export const useNewsList = (): UseNewsListReturn => {
       const data = await fetchNews(cursor);
       if (data.length > 0) {
         setNews(prev => [...prev, ...data]);
-        setCursor(data[data.length - 1].id);
+        setCursor(data[data.length - 1].createdAtUnix);
         setHasMore(true);
       } else {
         setHasMore(false);

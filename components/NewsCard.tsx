@@ -15,7 +15,7 @@ import { ThemedText } from '@/components/ThemedText';
 import { getFontWeight, pxToNumber } from '@/constants/parseDesignToken';
 import designSystem from '@/constants/ui-design-system';
 import { News } from '@/types/api';
-import { formatNewsDate } from '@/utils/dateUtils';
+import { formatNewsDate, formatNewsDateFromUnix } from '@/utils/dateUtils';
 
 interface NewsCardProps {
   news: News;
@@ -84,7 +84,7 @@ export default function NewsCard({ news }: NewsCardProps) {
             {news.title}
           </ThemedText>
           <ThemedText style={styles.metadata}>
-            Publisher • {formatNewsDate(news.createdAt)}
+            Publisher • {news.createdAtUnix ? formatNewsDateFromUnix(news.createdAtUnix) : formatNewsDate(news.createdAt)}
           </ThemedText>
         </View>
         <Image source={{ uri: news.imageUrl }} style={styles.image} />

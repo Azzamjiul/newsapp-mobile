@@ -12,6 +12,7 @@ export interface News {
   publisherUrl: string;
   createdAt: string;
   importedAt: string;
+  createdAtUnix: number;
 }
 
 export interface NewsListResponse extends Array<News> {}

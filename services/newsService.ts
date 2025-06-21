@@ -12,7 +12,7 @@ class NewsService {
 
   /**
    * Fetch news list
-   * @param cursor - Optional cursor for pagination
+   * @param cursor - Optional Unix timestamp cursor for pagination
    * @returns Promise<NewsListResponse>
    */
   async getNewsList(cursor?: number): Promise<NewsListResponse> {

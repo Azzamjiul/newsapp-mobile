@@ -20,7 +20,7 @@ import { ThemedView } from '@/components/ThemedView';
 import { getFontWeight, pxToNumber } from '@/constants/parseDesignToken';
 import designSystem from '@/constants/ui-design-system';
 import { useNewsDetail } from '@/hooks/useNewsDetail';
-import { formatArticleDate } from '@/utils/dateUtils';
+import { formatArticleDate, formatArticleDateFromUnix } from '@/utils/dateUtils';
 
 export default function NewsDetailScreen() {
   const router = useRouter();
@@ -91,7 +91,7 @@ export default function NewsDetailScreen() {
           
           <View style={styles.metadataContainer}>
             <Text style={styles.author}>By Publisher</Text>
-            <Text style={styles.timestamp}>{formatArticleDate(news.createdAt)}</Text>
+            <Text style={styles.timestamp}>{news.createdAtUnix ? formatArticleDateFromUnix(news.createdAtUnix) : formatArticleDate(news.createdAt)}</Text>
           </View>
 
           {/* Hero Image */}
