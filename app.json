@@ -12,6 +12,7 @@
       "supportsTablet": true
     },
     "android": {
+      "package": "cc.alat.newsapp",
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/adaptive-icon.png",
         "backgroundColor": "#ffffff"
@@ -39,7 +40,11 @@
       "typedRoutes": true
     },
     "extra": {
-      "apiBaseUrl": "http://localhost:4000"
+      "apiBaseUrl": "http://localhost:4000",
+      "router": {},
+      "eas": {
+        "projectId": "1788c9c2-769c-4298-99be-2c74ff618bf5"
+      }
     }
   }
 }
