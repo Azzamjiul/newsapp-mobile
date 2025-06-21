@@ -11,7 +11,7 @@ type News = {
   description: string;
 };
 
-export default function HomeScreen() {
+export default function NewsListScreen() {
   const [news, setNews] = useState<News[]>([]);
   const [loading, setLoading] = useState(true);
   const router = useRouter();
