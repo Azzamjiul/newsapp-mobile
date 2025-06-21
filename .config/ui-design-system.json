@@ -1,0 +1,275 @@
+{
+  "designSystem": {
+    "name": "News App Interface",
+    "version": "1.0",
+    "description": "Mobile-first news aggregation interface with tab navigation and card-based content layout"
+  },
+  "colorPalette": {
+    "primary": {
+      "red": "#E53E3E",
+      "orange": "#DD6B20", 
+      "green": "#38A169",
+      "blue": "#3182CE",
+      "purple": "#805AD5"
+    },
+    "neutral": {
+      "white": "#FFFFFF",
+      "lightGray": "#F7FAFC",
+      "mediumGray": "#A0ADB8",
+      "darkGray": "#2D3748",
+      "black": "#1A202C"
+    },
+    "background": {
+      "primary": "#FFFFFF",
+      "secondary": "#F7FAFC",
+      "accent": "#EDF2F7"
+    }
+  },
+  "typography": {
+    "fontFamily": {
+      "primary": "system-ui, -apple-system, sans-serif",
+      "fallback": "Arial, Helvetica, sans-serif"
+    },
+    "fontSizes": {
+      "xs": "12px",
+      "sm": "14px",
+      "base": "16px",
+      "lg": "18px",
+      "xl": "20px",
+      "2xl": "24px"
+    },
+    "fontWeights": {
+      "normal": 400,
+      "medium": 500,
+      "semibold": 600,
+      "bold": 700
+    },
+    "lineHeights": {
+      "tight": 1.2,
+      "normal": 1.4,
+      "relaxed": 1.6
+    }
+  },
+  "layout": {
+    "structure": {
+      "type": "mobile-first",
+      "maxWidth": "100vw",
+      "padding": "16px",
+      "gaps": {
+        "small": "8px",
+        "medium": "16px",
+        "large": "24px"
+      }
+    },
+    "grid": {
+      "columns": 1,
+      "breakpoints": {
+        "mobile": "0px",
+        "tablet": "768px",
+        "desktop": "1024px"
+      }
+    }
+  },
+  "components": {
+    "topNavigation": {
+      "type": "horizontal-tabs",
+      "height": "60px",
+      "backgroundColor": "gradient",
+      "gradient": "linear-gradient(to right, #E53E3E, #DD6B20, #38A169, #3182CE, #805AD5)",
+      "items": {
+        "padding": "12px 20px",
+        "fontSize": "18px",
+        "fontWeight": "semibold",
+        "color": "#FFFFFF",
+        "textTransform": "capitalize"
+      },
+      "structure": [
+        "Primary Category",
+        "Secondary Category", 
+        "Tertiary Category",
+        "Quaternary Category",
+        "Additional Category"
+      ]
+    },
+    "subNavigation": {
+      "type": "horizontal-pills",
+      "backgroundColor": "#F7FAFC",
+      "padding": "12px 16px",
+      "gap": "12px",
+      "items": {
+        "borderRadius": "20px",
+        "padding": "8px 16px",
+        "fontSize": "14px",
+        "fontWeight": "medium",
+        "states": {
+          "active": {
+            "backgroundColor": "#1A202C",
+            "color": "#FFFFFF"
+          },
+          "inactive": {
+            "backgroundColor": "#FFFFFF",
+            "color": "#2D3748",
+            "border": "1px solid #E2E8F0"
+          }
+        }
+      }
+    },
+    "newsCard": {
+      "type": "content-card",
+      "backgroundColor": "#FFFFFF",
+      "borderRadius": "0px",
+      "border": "none",
+      "padding": "16px",
+      "marginBottom": "1px",
+      "structure": {
+        "layout": "horizontal",
+        "content": {
+          "title": {
+            "fontSize": "18px",
+            "fontWeight": "semibold",
+            "color": "#1A202C",
+            "lineHeight": "tight",
+            "marginBottom": "8px",
+            "maxLines": 2
+          },
+          "metadata": {
+            "fontSize": "14px",
+            "color": "#A0ADB8",
+            "fontWeight": "normal",
+            "items": ["source", "timestamp"],
+            "separator": " • "
+          }
+        },
+        "media": {
+          "position": "right",
+          "width": "80px",
+          "height": "80px",
+          "borderRadius": "8px",
+          "aspectRatio": "1:1",
+          "objectFit": "cover"
+        }
+      },
+      "hover": {
+        "backgroundColor": "#F7FAFC"
+      }
+    },
+    "bottomNavigation": {
+      "type": "tab-bar",
+      "position": "fixed",
+      "bottom": "0",
+      "height": "80px",
+      "backgroundColor": "#FFFFFF",
+      "borderTop": "1px solid #E2E8F0",
+      "items": {
+        "count": 5,
+        "layout": "equally-spaced",
+        "structure": {
+          "icon": {
+            "size": "24px",
+            "marginBottom": "4px"
+          },
+          "label": {
+            "fontSize": "12px",
+            "fontWeight": "medium"
+          },
+          "states": {
+            "active": {
+              "color": "#3182CE"
+            },
+            "inactive": {
+              "color": "#A0ADB8"
+            }
+          }
+        }
+      }
+    }
+  },
+  "patterns": {
+    "contentFeed": {
+      "type": "vertical-list",
+      "itemSpacing": "1px",
+      "backgroundColor": "#EDF2F7",
+      "scrollBehavior": "smooth",
+      "loadingStates": true
+    },
+    "mediaHandling": {
+      "lazyLoading": true,
+      "fallbackColor": "#E2E8F0",
+      "aspectRatios": {
+        "thumbnail": "1:1",
+        "banner": "16:9",
+        "portrait": "3:4"
+      }
+    },
+    "textTruncation": {
+      "headlines": {
+        "maxLines": 2,
+        "overflow": "ellipsis"
+      },
+      "descriptions": {
+        "maxLines": 3,
+        "overflow": "ellipsis"
+      }
+    }
+  },
+  "interactions": {
+    "touch": {
+      "tapHighlight": "rgba(0,0,0,0.1)",
+      "minimumTouchTarget": "44px"
+    },
+    "scroll": {
+      "momentum": true,
+      "bounceEffect": true
+    },
+    "transitions": {
+      "duration": "0.2s",
+      "easing": "ease-out"
+    }
+  },
+  "accessibility": {
+    "contrast": {
+      "minimum": "4.5:1",
+      "enhanced": "7:1"
+    },
+    "focusIndicators": {
+      "visible": true,
+      "color": "#3182CE",
+      "width": "2px"
+    },
+    "semanticMarkup": {
+      "headings": "hierarchical",
+      "landmarks": "defined",
+      "lists": "structured"
+    }
+  },
+  "responsive": {
+    "breakpoints": {
+      "mobile": {
+        "width": "320px-767px",
+        "columns": 1,
+        "padding": "16px"
+      },
+      "tablet": {
+        "width": "768px-1023px", 
+        "columns": 2,
+        "padding": "24px"
+      },
+      "desktop": {
+        "width": "1024px+",
+        "columns": 3,
+        "padding": "32px"
+      }
+    }
+  },
+  "implementation": {
+    "framework": "mobile-web",
+    "cssMethodology": "utility-first",
+    "iconSystem": "outline-style",
+    "imageOptimization": "webp-with-fallback",
+    "performance": {
+      "lazyLoading": true,
+      "infiniteScroll": true,
+      "virtualization": "recommended-for-large-lists"
+    }
+  }
+}
