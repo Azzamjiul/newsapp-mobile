@@ -10,20 +10,12 @@ import { Stack } from 'expo-router';
 function AuthGate() {
   const { user, loading } = useAuth();
   if (loading) return null;
-  // If not logged in, show login/register stack
-  if (!user) {
-    return (
-      <Stack screenOptions={{ headerShown: false }}>
-        <Stack.Screen name="login" />
-        <Stack.Screen name="register" />
-      </Stack>
-    );
-  }
-  // If logged in, show main app stack
+  // Always show the tab bar, but show login/register as modals if not logged in
   return (
     <Stack screenOptions={{ headerShown: false }}>
       <Stack.Screen name="(tabs)" />
-      <Stack.Screen name="profile" />
+      <Stack.Screen name="login" options={{ presentation: 'modal' }} />
+      <Stack.Screen name="register" options={{ presentation: 'modal' }} />
     </Stack>
   );
 }

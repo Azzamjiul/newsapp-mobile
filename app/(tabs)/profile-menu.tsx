@@ -1,3 +1,3 @@
-import ProfileMenu from '../../screens/ProfileMenu';
+import ProfileScreen from '../../screens/ProfileScreen';
 
-export default ProfileMenu;
+export default ProfileScreen;
