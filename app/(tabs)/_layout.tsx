@@ -45,10 +45,19 @@ export default function TabLayout() {
       <Tabs.Screen
         name="search"
         options={{
-          title: 'Search News',
+          title: 'Search',
           headerShown: true, // Enable header just for this screen
           headerTitle: 'Search News',
           tabBarIcon: ({ color, size }) => <Ionicons name="search" color={color} size={size} />,
+        }}
+      />
+      <Tabs.Screen
+        name="profile-menu"
+        options={{
+          title: 'Profile',
+          headerShown: true, // Enable header just for this screen
+          headerTitle: 'My Profile',
+          tabBarIcon: ({ color, size }) => <Ionicons name="person" color={color} size={size} />,
         }}
       />
       {/* Hide [id].tsx from the tab bar but keep it in the same navigator group */}

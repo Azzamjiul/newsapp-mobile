@@ -18,3 +18,17 @@ export interface News {
 export interface NewsListResponse extends Array<News> {}
 
 export interface NewsDetailResponse extends News {}
+
+export interface User {
+  id: number;
+  name: string;
+  email: string;
+  notificationsEnabled: boolean;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface AuthResponse {
+  token: string;
+  user: User;
+}

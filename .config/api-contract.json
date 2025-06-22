@@ -1,124 +1,618 @@
 {
-"openapi": "3.0.0",
-"info": {
-"title": "Newsarc API",
-"version": "1.0.0",
-"description": "API documentation for Newsarc backend"
-},
-"servers": [
-{
-"url": "http://localhost:4000"
-}
-],
-"paths": {
-"/api/news": {
-"get": {
-"summary": "Get list of news",
-"tags": [
-"News"
-],
-"responses": {
-"200": {
-"description": "List of news",
-"content": {
-"application/json": {
-"schema": {
-"type": "array",
-"items": {
-"$ref": "#/components/schemas/News"
-}
-}
-}
-}
-}
-}
-}
-},
-"/api/news/{id}": {
-"get": {
-"summary": "Get news by ID",
-"tags": [
-"News"
-],
-"parameters": [
-{
-"in": "path",
-"name": "id",
-"schema": {
-"type": "integer"
-},
-"required": true,
-"description": "News ID"
-}
-],
-"responses": {
-"200": {
-"description": "News item",
-"content": {
-"application/json": {
-"schema": {
-"$ref": "#/components/schemas/News"
-}
-}
-}
-},
-"404": {
-"description": "News not found"
-}
-}
-}
-}
-},
-"components": {
-"schemas": {
-"News": {
-"type": "object",
-"properties": {
-"id": {
-"type": "integer",
-"example": 1
-},
-"imageUrl": {
-"type": "string",
-"example": "https://example.com/image.jpg"
-},
-"title": {
-"type": "string",
-"example": "Breaking News Title"
-},
-"description": {
-"type": "string",
-"example": "Short summary of the news."
-},
-"content": {
-"type": "string",
-"example": "This is the content of the news."
-},
-"publisherId": {
-"type": "integer",
-"example": 123
-},
-"publisherUrl": {
-"type": "string",
-"example": "https://publisher.com/news/123"
-},
-"createdAt": {
-"type": "string",
-"format": "date-time",
-"example": "2025-06-21T12:00:00Z"
-},
-"importedAt": {
-"type": "string",
-"format": "date-time",
-"example": "2025-06-21T12:05:00Z"
-},
-"createdAtUnix": {
-"type": "integer",
-"example": 1718966400
-}
-}
-}
-}
-},
-"tags": []
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Newsarc API",
+    "version": "1.0.0",
+    "description": "API documentation for Newsarc backend"
+  },
+  "servers": [
+    {
+      "url": "http://localhost:4000"
+    }
+  ],
+  "paths": {
+    "/api/users/register": {
+      "post": {
+        "summary": "Register a new user",
+        "tags": [
+          "User"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string"
+                  },
+                  "email": {
+                    "type": "string"
+                  },
+                  "password": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "User registered",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/User"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Email already in use"
+          }
+        }
+      }
+    },
+    "/api/users/login": {
+      "post": {
+        "summary": "Login a user",
+        "tags": [
+          "User"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "email": {
+                    "type": "string"
+                  },
+                  "password": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Login successful",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "token": {
+                      "type": "string"
+                    },
+                    "user": {
+                      "$ref": "#/components/schemas/User"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Invalid credentials"
+          }
+        }
+      }
+    },
+    "/api/users/me": {
+      "get": {
+        "summary": "Get current user profile",
+        "tags": [
+          "User"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Current user profile",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/User"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "User not found"
+          }
+        }
+      }
+    },
+    "/api/users/{id}": {
+      "put": {
+        "summary": "Update user profile",
+        "tags": [
+          "User"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "schema": {
+              "type": "integer"
+            },
+            "required": true,
+            "description": "User ID"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string"
+                  },
+                  "email": {
+                    "type": "string"
+                  },
+                  "password": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "User updated",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/User"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "User not found"
+          }
+        }
+      },
+      "delete": {
+        "summary": "Delete user profile",
+        "tags": [
+          "User"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "schema": {
+              "type": "integer"
+            },
+            "required": true,
+            "description": "User ID"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "User deleted"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "User not found"
+          }
+        }
+      }
+    },
+    "/users/notify": {
+      "post": {
+        "summary": "Send push notification to a user",
+        "tags": [
+          "User Device Token"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "userId": {
+                    "type": "integer"
+                  },
+                  "title": {
+                    "type": "string"
+                  },
+                  "body": {
+                    "type": "string"
+                  },
+                  "data": {
+                    "type": "object",
+                    "additionalProperties": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Notification sent",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "successCount": {
+                      "type": "integer"
+                    },
+                    "failureCount": {
+                      "type": "integer"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/users/device-tokens": {
+      "post": {
+        "summary": "Add a device token for the current user",
+        "tags": [
+          "User Device Token"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "deviceToken": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Device token added",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserDeviceToken"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "summary": "Remove a device token for the current user",
+        "tags": [
+          "User Device Token"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "deviceToken": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "204": {
+            "description": "Device token removed"
+          }
+        }
+      },
+      "get": {
+        "summary": "List all device tokens for the current user",
+        "tags": [
+          "User Device Token"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "List of device tokens",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/UserDeviceToken"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/users/device-tokens/notification": {
+      "put": {
+        "summary": "Set notification enabled/disabled for the current user",
+        "tags": [
+          "User Device Token"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "notificationsEnabled": {
+                    "type": "boolean"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Notification preference updated",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "notificationsEnabled": {
+                      "type": "boolean"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "get": {
+        "summary": "Get notification enabled/disabled status for the current user",
+        "tags": [
+          "User Device Token"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Notification preference",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "notificationsEnabled": {
+                      "type": "boolean"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/news": {
+      "get": {
+        "summary": "Get list of news",
+        "tags": [
+          "News"
+        ],
+        "responses": {
+          "200": {
+            "description": "List of news",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/News"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/news/{id}": {
+      "get": {
+        "summary": "Get news by ID",
+        "tags": [
+          "News"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "schema": {
+              "type": "integer"
+            },
+            "required": true,
+            "description": "News ID"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "News item",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/News"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "News not found"
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "User": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer"
+          },
+          "name": {
+            "type": "string"
+          },
+          "email": {
+            "type": "string"
+          },
+          "notificationsEnabled": {
+            "type": "boolean"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "UserDeviceToken": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer"
+          },
+          "userId": {
+            "type": "integer"
+          },
+          "deviceToken": {
+            "type": "string"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "News": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "example": 1
+          },
+          "imageUrl": {
+            "type": "string",
+            "example": "https://example.com/image.jpg"
+          },
+          "title": {
+            "type": "string",
+            "example": "Breaking News Title"
+          },
+          "description": {
+            "type": "string",
+            "example": "Short summary of the news."
+          },
+          "content": {
+            "type": "string",
+            "example": "This is the content of the news."
+          },
+          "publisherId": {
+            "type": "integer",
+            "example": 123
+          },
+          "publisherUrl": {
+            "type": "string",
+            "example": "https://publisher.com/news/123"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time",
+            "example": "2025-06-21T12:00:00Z"
+          },
+          "importedAt": {
+            "type": "string",
+            "format": "date-time",
+            "example": "2025-06-21T12:05:00Z"
+          },
+          "createdAtUnix": {
+            "type": "integer",
+            "example": 1718966400
+          }
+        }
+      }
+    }
+  },
+  "tags": []
 }
