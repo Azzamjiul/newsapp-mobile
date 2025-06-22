@@ -106,6 +106,7 @@ export default function NewsDetailScreen() {
             contentWidth={contentWidth}
             source={{ html: news.content }}
             baseStyle={styles.articleContent}
+            ignoredDomTags={['inline2']}
             tagsStyles={{
               p: {
                 fontSize: pxToNumber(designSystem.typography.fontSizes.lg),

@@ -70,7 +70,7 @@ export async function registerDeviceToken(
   deviceToken: string, 
   token: string
 ): Promise<any> {
-  const response = await fetch(`${API_BASE_URL}/users/device-tokens`, {
+  const response = await fetch(`${API_BASE_URL}/api/users/device-tokens`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',

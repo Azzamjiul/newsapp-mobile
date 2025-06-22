@@ -1,4 +1,10 @@
-import messaging from '@react-native-firebase/messaging';
+import { getApp, getApps } from '@react-native-firebase/app';
+import {
+  AuthorizationStatus,
+  getMessaging,
+  getToken,
+  requestPermission
+} from '@react-native-firebase/messaging';
 import Constants from 'expo-constants';
 import * as Notifications from 'expo-notifications';
 
@@ -44,15 +50,22 @@ export async function getDevicePushToken(): Promise<string> {
  */
 export async function getFCMDeviceToken(): Promise<string | null> {
   try {
-    const authStatus = await messaging().requestPermission();
+    // Ensure the default app is initialized (should be automatic in a built app with correct native config)
+    if (getApps().length === 0) {
+      console.error('[FCM] No Firebase app initialized. Make sure you are running a built app (not Expo Go) and your native config is correct.');
+      return null;
+    }
+    const app = getApp();
+    const messaging = getMessaging(app);
+    const authStatus = await requestPermission(messaging);
     const enabled =
-      authStatus === messaging.AuthorizationStatus.AUTHORIZED ||
-      authStatus === messaging.AuthorizationStatus.PROVISIONAL;
+      authStatus === AuthorizationStatus.AUTHORIZED ||
+      authStatus === AuthorizationStatus.PROVISIONAL;
     if (!enabled) {
       console.log('FCM permission not granted');
       return null;
     }
-    const fcmToken = await messaging().getToken();
+    const fcmToken = await getToken(messaging);
     return fcmToken;
   } catch (error) {
     console.error('Error getting FCM device token:', error);
