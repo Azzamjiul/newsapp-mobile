@@ -82,7 +82,6 @@ export function configureNotifications() {
   // Set notification handler for when app is in foreground (Expo notifications)
   Notifications.setNotificationHandler({
     handleNotification: async () => ({
-      shouldShowAlert: true,
       shouldPlaySound: true,
       shouldSetBadge: true,
       shouldShowBanner: true,
