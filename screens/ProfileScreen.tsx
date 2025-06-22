@@ -1,14 +1,68 @@
-import { useNavigation } from '@react-navigation/native';
-import React from 'react';
-import { SafeAreaView, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { useIsFocused, useNavigation } from '@react-navigation/native';
+import React, { useEffect, useState } from 'react';
+import {
+  Alert,
+  SafeAreaView,
+  ScrollView,
+  StyleSheet,
+  Switch,
+  Text,
+  TouchableOpacity,
+  View
+} from 'react-native';
 import { useTheme } from '../constants/ui-design-system';
 import { useAuth } from '../hooks/AuthContext';
+import { getNotificationStatus } from '../services/userService';
 
 export default function ProfileScreen() {
   const theme = useTheme();
-  const { user, logout } = useAuth();
+  const { user, token, logout, toggleNotifications } = useAuth();
   const navigation = useNavigation<any>();
-  
+  const isFocused = useIsFocused();
+  const [isToggling, setIsToggling] = useState(false);
+  const [notificationEnabled, setNotificationEnabled] = useState(user?.notificationsEnabled ?? false);
+
+  useEffect(() => {
+    let isMounted = true;
+    const fetchNotificationStatus = async () => {
+      if (!user || !token) return;
+      try {
+        const result = await getNotificationStatus(token);
+        if (isMounted) {
+          setNotificationEnabled(result.notificationsEnabled);
+        }
+      } catch (e) {
+        // Optionally handle error
+      }
+    };
+    if (isFocused) {
+      fetchNotificationStatus();
+    }
+    return () => { isMounted = false; };
+  }, [isFocused, user]);
+
+  // Update notificationEnabled state when user.notificationsEnabled changes
+  useEffect(() => {
+    setNotificationEnabled(user?.notificationsEnabled ?? false);
+  }, [user?.notificationsEnabled]);
+
+  const handleToggleNotifications = async (value: boolean) => {
+    if (isToggling) return;
+    
+    setIsToggling(true);
+    try {
+      await toggleNotifications(value);
+      setNotificationEnabled(value);
+    } catch (error) {
+      Alert.alert(
+        "Error",
+        "Failed to update notification settings. Please try again.",
+        [{ text: "OK" }]
+      );
+    } finally {
+      setIsToggling(false);
+    }
+  };
   // Define styles at the beginning so they can be used anywhere in the component
   const styles = StyleSheet.create({
     safeArea: {
@@ -68,6 +122,14 @@ export default function ProfileScreen() {
       color: '#FFFFFF',
       fontSize: 16,
       fontWeight: '600',
+    },
+    notificationHelpText: {
+      fontSize: 14,
+      color: theme.input.borderColor,
+      marginTop: 8,
+      marginBottom: 16,
+      paddingHorizontal: 16,
+      lineHeight: 20,
     },
     // Styles for not logged in state
     notLoggedInContainer: {
@@ -143,8 +205,21 @@ export default function ProfileScreen() {
           
           <View style={styles.infoItem}>
             <Text style={styles.infoLabel}>Notifications:</Text>
-            <Text style={styles.infoValue}>{user.notificationsEnabled ? 'Enabled' : 'Disabled'}</Text>
+            <Switch
+              trackColor={{ false: '#767577', true: theme.button.backgroundColor }}
+              thumbColor={notificationEnabled ? '#FFFFFF' : '#f4f3f4'}
+              ios_backgroundColor="#3e3e3e"
+              onValueChange={handleToggleNotifications}
+              value={notificationEnabled}
+              disabled={isToggling}
+            />
           </View>
+          
+          <Text style={styles.notificationHelpText}>
+            {notificationEnabled 
+              ? "You will receive push notifications about new articles and updates. We've registered your device for notifications."
+              : "Enable to receive push notifications about new articles and updates."}
+          </Text>
         </View>
         
         <TouchableOpacity style={styles.logoutButton} onPress={logout}>

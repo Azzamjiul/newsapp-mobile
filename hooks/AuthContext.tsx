@@ -1,7 +1,14 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import React, { createContext, ReactNode, useContext, useEffect, useState } from 'react';
-import { getProfile, loginUser, logoutUser as serviceLogoutUser } from '../services/userService';
+import {
+  getProfile,
+  loginUser,
+  registerDeviceToken,
+  logoutUser as serviceLogoutUser,
+  updateNotificationPreference
+} from '../services/userService';
 import { User } from '../types/api';
+import { configureNotifications, registerForPushNotifications } from '../utils/notificationUtils';
 
 interface AuthContextType {
   user: User | null;
@@ -9,6 +16,7 @@ interface AuthContextType {
   loading: boolean;
   login: (email: string, password: string) => Promise<void>;
   logout: () => void;
+  toggleNotifications: (enabled: boolean) => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -19,6 +27,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    // Configure notifications
+    configureNotifications();
+    
     // Load token and user from storage on mount
     (async () => {
       const storedToken = await AsyncStorage.getItem('token');
@@ -53,9 +64,34 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     await AsyncStorage.removeItem('token');
     serviceLogoutUser();
   };
+  
+  const toggleNotifications = async (enabled: boolean) => {
+    if (!token || !user) return;
+    
+    try {
+      setLoading(true);
+      const response = await updateNotificationPreference(enabled, token);
+      
+      // If enabling notifications, register the device token
+      if (enabled) {
+        const deviceToken = await registerForPushNotifications();
+        if (deviceToken) {
+          await registerDeviceToken(deviceToken, token);
+        }
+      }
+      
+      // Update user state with new notification preference
+      setUser(prev => prev ? { ...prev, notificationsEnabled: response.notificationsEnabled } : null);
+    } catch (error) {
+      console.error('Failed to toggle notifications:', error);
+      throw error;
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
-    <AuthContext.Provider value={{ user, token, loading, login, logout }}>
+    <AuthContext.Provider value={{ user, token, loading, login, logout, toggleNotifications }}>
       {children}
     </AuthContext.Provider>
   );

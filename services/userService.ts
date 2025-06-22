@@ -45,3 +45,59 @@ export async function getProfile(token?: string): Promise<User> {
 export function logoutUser() {
   // Remove token from storage if needed
 }
+
+export async function updateNotificationPreference(
+  enabled: boolean, 
+  token: string
+): Promise<{ notificationsEnabled: boolean }> {
+  const response = await fetch(`${API_BASE_URL}/api/users/device-tokens/notification`, {
+    method: 'PUT',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${token}`,
+    },
+    body: JSON.stringify({ notificationsEnabled: enabled }),
+  });
+  
+  if (!response.ok) {
+    throw new Error('Failed to update notification preference');
+  }
+  
+  return response.json();
+}
+
+export async function registerDeviceToken(
+  deviceToken: string, 
+  token: string
+): Promise<any> {
+  const response = await fetch(`${API_BASE_URL}/users/device-tokens`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${token}`,
+    },
+    body: JSON.stringify({ deviceToken }),
+  });
+  
+  if (!response.ok) {
+    throw new Error('Failed to register device token');
+  }
+  
+  return response.json();
+}
+
+export async function getNotificationStatus(
+  token: string
+): Promise<{ notificationsEnabled: boolean }> {
+  const response = await fetch(`${API_BASE_URL}/api/users/device-tokens/notification`, {
+    headers: {
+      'Authorization': `Bearer ${token}`,
+    },
+  });
+  
+  if (!response.ok) {
+    throw new Error('Failed to get notification status');
+  }
+  
+  return response.json();
+}
