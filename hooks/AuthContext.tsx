@@ -1,4 +1,5 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import * as Notifications from 'expo-notifications';
 import React, { createContext, ReactNode, useContext, useEffect, useState } from 'react';
 import {
   getProfile,
@@ -29,6 +30,16 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     // Configure notifications
     configureNotifications();
+    
+    // Request notification permissions
+    (async () => {
+      try {
+        const { status } = await Notifications.requestPermissionsAsync();
+        console.log('Notification permission status:', status);
+      } catch (error) {
+        console.error('Error requesting notification permissions:', error);
+      }
+    })();
     
     // Load token and user from storage on mount
     (async () => {

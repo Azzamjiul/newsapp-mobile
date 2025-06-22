@@ -47,6 +47,15 @@
       ],
       [
         "expo-notifications"
+      ],
+      [
+        "@react-native-firebase/app"
+      ],
+      [
+        "@react-native-firebase/messaging",
+        {
+          "backgroundMessageHandler": "./firebaseMessagingBackground.js"
+        }
       ]
     ],
     "experiments": {

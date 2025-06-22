@@ -1,8 +1,10 @@
 import { getApp, getApps } from '@react-native-firebase/app';
 import {
   AuthorizationStatus,
+  FirebaseMessagingTypes,
   getMessaging,
   getToken,
+  onMessage,
   requestPermission
 } from '@react-native-firebase/messaging';
 import Constants from 'expo-constants';
@@ -74,10 +76,10 @@ export async function getFCMDeviceToken(): Promise<string | null> {
 }
 
 /**
- * Configure notification handling
+ * Configure notification handling for both Expo and FCM
  */
 export function configureNotifications() {
-  // Set notification handler for when app is in foreground
+  // Set notification handler for when app is in foreground (Expo notifications)
   Notifications.setNotificationHandler({
     handleNotification: async () => ({
       shouldShowAlert: true,
@@ -87,4 +89,75 @@ export function configureNotifications() {
       shouldShowList: true,
     }),
   });
+
+  // Configure FCM message handlers
+  configureFCMHandlers();
+}
+
+/**
+ * Configure FCM message handlers for foreground and background messages
+ */
+export function configureFCMHandlers() {
+  try {
+    if (getApps().length === 0) {
+      console.log('[FCM] Firebase app not initialized, skipping FCM handlers');
+      return;
+    }
+
+    const messaging = getMessaging();
+
+    // Handle foreground messages
+    const unsubscribe = onMessage(messaging, (remoteMessage: FirebaseMessagingTypes.RemoteMessage) => {
+      console.log('[FCM] Foreground message received:', remoteMessage);
+      
+      // Display notification manually when app is in foreground
+      if (remoteMessage.notification) {
+        Notifications.scheduleNotificationAsync({
+          content: {
+            title: remoteMessage.notification.title || 'News Update',
+            body: remoteMessage.notification.body || 'You have a new notification',
+            data: remoteMessage.data,
+          },
+          trigger: null, // Show immediately
+        });
+      }
+    });
+
+    console.log('[FCM] Message handlers configured');
+    return unsubscribe;
+  } catch (error) {
+    console.error('[FCM] Error configuring message handlers:', error);
+  }
+}
+
+/**
+ * Test notification setup - useful for debugging
+ */
+export async function testNotificationSetup() {
+  try {
+    console.log('[Test] Starting notification setup test...');
+    
+    // Check Expo notification permissions
+    const { status } = await Notifications.getPermissionsAsync();
+    console.log('[Test] Expo notification permission:', status);
+    
+    // Check FCM setup
+    const fcmToken = await getFCMDeviceToken();
+    console.log('[Test] FCM token:', fcmToken ? 'Available' : 'Not available');
+    
+    // Test local notification
+    await Notifications.scheduleNotificationAsync({
+      content: {
+        title: 'Test Notification',
+        body: 'If you see this, notifications are working!',
+      },
+      trigger: null,
+    });
+    
+    console.log('[Test] Test notification scheduled');
+    return true;
+  } catch (error) {
+    console.error('[Test] Notification setup test failed:', error);
+    return false;
+  }
 }
