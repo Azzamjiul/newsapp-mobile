@@ -1,7 +1,7 @@
 import { NewsDetailResponse, NewsListResponse } from '@/types/api';
 import Constants from 'expo-constants';
 
-const API_BASE_URL = Constants.expoConfig?.extra?.apiBaseUrl || process.env.EXPO_PUBLIC_API_BASE_URL || 'http://localhost:4000';
+const API_BASE_URL = Constants.expoConfig?.extra?.apiBaseUrl || process.env.EXPO_PUBLIC_API_BASE_URL || 'https://news-api.alat.cc';
 
 class NewsService {
   private baseUrl: string;

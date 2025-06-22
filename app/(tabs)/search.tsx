@@ -7,7 +7,7 @@ import PageTransition from '@/components/PageTransition';
 import { getFontWeight, pxToNumber } from '@/constants/parseDesignToken';
 import designSystem from '@/constants/ui-design-system';
 
-const API_URL = 'http://localhost:4000/api/news';
+const API_URL = 'https://news-api.alat.cc/api/news';
 
 type News = {
   id: number;
@@ -68,7 +68,7 @@ export default function SearchScreen() {
               overflow: 'hidden',
               elevation: 2,
               padding: pxToNumber(designSystem.components.newsCard.padding),
-            }} onPress={() => router.push({ pathname: '/news/[id]', params: { id: item.id.toString() } })}>
+            }} onPress={() => router.push({ pathname: '/[id]', params: { id: item.id.toString() } })}>
               <Image source={{ uri: item.imageUrl }} style={{
                 width: pxToNumber(designSystem.components.newsCard.structure.media.width),
                 height: pxToNumber(designSystem.components.newsCard.structure.media.height),

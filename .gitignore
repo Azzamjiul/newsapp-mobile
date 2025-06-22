@@ -37,3 +37,7 @@ yarn-error.*
 *.tsbuildinfo
 
 app-example
+
+# Ignore Firebase/FCM credentials (keep native folders tracked)
+android/app/google-services.json
+ios/GoogleService-Info.plist
